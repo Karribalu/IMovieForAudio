@@ -1,0 +1,34 @@
+.container {
+  width: 100%;
+  height: 50%;
+}
+.audioContainer{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  padding-top: 30px;
+}
+.audioFile{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  justify-items: center;
+}
+.heading{
+  display: flex;
+  justify-content: space-between;
+}
+.importText{
+  font-size: 12px;
+  font-weight: 500;
+}
+.import{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+}
