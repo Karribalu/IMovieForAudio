@@ -1,3 +1,23 @@
 .container {
-    height: 50%;
+   
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 50px
+}
+.waveForms{
+    padding-top: 50px;
+    /* background-color: black; */
+    border: 1px solid black;
+    position: relative;
+    display: flex;
+    gap: 10px;
+    height: 200px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+.controls{
+    padding-left: 50%;
+    display: flex;
+    gap: 10px
 }
