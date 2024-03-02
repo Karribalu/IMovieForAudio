@@ -1,123 +1,173 @@
-import React, { useState, useRef, useMemo, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useMemo,
+  useEffect,
+  useCallback,
+} from "react";
 import WaveSurfer from "@wavesurfer/react";
 import AudioPlayer from "react-audio-player";
-import Draggable from "react-draggable";
+import LineDraggable from "react-draggable";
 import audio1 from "../assets/audios/audio1.mp3";
 import audio2 from "../assets/audios/audio2.mp3";
 import audio3 from "../assets/audios/audio3.mp3";
 import styles from "../styles/Timeline.module.css";
-import { FaStepForward } from "react-icons/fa";
+import { FaPause, FaStepForward } from "react-icons/fa";
 import { FaStepBackward } from "react-icons/fa";
 import { FaPlay } from "react-icons/fa";
 import WaveTimeline from "wavesurfer.js/dist/plugins/timeline.esm.js";
-
+import { Draggable, Droppable } from "@hello-pangea/dnd";
 /**
  * @author
  * @function Timeline
  **/
 
 export const Timeline = (props) => {
+  const SONG_WIDTH = 1500;
+  const audioRef = useRef();
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
-  //   const [audioFiles, setAudioFiles] = useState([]);
+  const timelineDraggableRef = useRef();
+  const [isPlaying, setIsPlaying] = useState(false);
   const [audioFiles, setAudioFiles] = useState([
     {
       url: audio1,
+      duration: 267.75,
     },
     {
       url: audio2,
+      duration: 248.3,
     },
     {
       url: audio3,
+      duration: 118.5,
     },
   ]);
-  const audioRef = useRef();
   useEffect(() => {
-    console.log("current time changes", currentTime);
-    console.log(
-      (currentTime / audioRef.current.audioEl.current.duration) * 100
-    );
-  }, [currentTime]);
+    if (audioRef?.current?.audioEl?.current) {
+      try {
+        isPlaying
+          ? audioRef?.current?.audioEl?.current?.play()
+          : audioRef?.current?.audioEl?.current?.pause();
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }, [isPlaying, currentSongIndex]);
   const handleTimeUpdate = (time) => {
     setCurrentTime(time);
   };
-  const handleSongChange = (index) => {
-    console.log("song change", index);
-    setCurrentSongIndex(index);
-    audioRef.current.audioEl.current.currentTime = 0;
-  };
+  useEffect(() => {
+    const songDuration = audioRef?.current?.audioEl.current?.duration;
+    const newPos =
+      SONG_WIDTH * currentSongIndex +
+      currentSongIndex * 10 +
+      (SONG_WIDTH / songDuration) * currentTime;
+    timelineDraggableRef?.current?.setState({ x: newPos, y: 0 });
+  }, [currentTime, timelineDraggableRef]);
   const handleDrag = (e, data) => {
-    console.log("drag", e, data);
-    // const { x } = data;
-    // const timelineWidth = e.target.offsetWidth;
-    // const songDuration = audioFiles[currentSongIndex].duration;
-    // const newTime = (x / timelineWidth) * songDuration;
-    // setCurrentTime(newTime);
-    // audioRef.current.audioEl.current.currentTime = newTime;
+    const { x } = data;
+    let newSongIndex =
+      Math.floor((x / (audioFiles.length * SONG_WIDTH)) * audioFiles.length) %
+      audioFiles.length;
+    let newCurrentTime =
+      (audioFiles[newSongIndex].duration * (x % SONG_WIDTH)) / SONG_WIDTH;
+    audioRef.current.audioEl.current.currentTime = newCurrentTime;
+    if (newSongIndex < 0) {
+      setCurrentSongIndex(0);
+    } else {
+      setCurrentSongIndex(newSongIndex);
+    }
   };
-  const handleInteraction = (e, data) => {
-    audioRef.current.audioEl.current.play();
-    setCurrentSongIndex(e.options.index);
-    console.log("interaction", e, data);
+  useEffect(() => {
+    console.log(timelineDraggableRef?.current);
+  }, [timelineDraggableRef]);
+  const timelines = useMemo(() => {
+    return audioFiles.map((audio, index) => {
+      return (
+        <div className={styles.waveForm}>
+          <WaveSurfer
+            key={index}
+            url={audio.url}
+            waveColor="rgb(200, 0, 200)"
+            width={SONG_WIDTH}
+            index={index}
+            interact={false}
+          />
+        </div>
+      );
+    });
+  }, [JSON.stringify(audioFiles)]);
+  const handlePrevious = () => {
+    let index = currentSongIndex > 0 ? currentSongIndex - 1 : 0;
+    audioRef.current.audioEl.current.currentTime = 0;
+    setCurrentSongIndex(index % audioFiles.length);
+    setIsPlaying(true);
   };
-  let timelinePos = useMemo(() => {
-    return (
-      ((currentTime / audioRef?.current?.audioEl?.current?.duration) | 1) * 100
-    );
-  }, [currentTime, audioRef?.current?.audioEl?.current?.duration]);
-  const waveTimeline = useMemo(() => [WaveTimeline.create()], []);
+  const handleNext = () => {
+    let index =
+      currentSongIndex < audioFiles.length
+        ? currentSongIndex + 1
+        : audioFiles.length;
+    console.log("Index changed", index);
+    audioRef.current.audioEl.current.currentTime = 0;
+    setCurrentSongIndex(index % audioFiles.length);
+    setIsPlaying(true);
+  };
+  const handlePlayPause = () => {
+    console.log(audioRef);
+    setIsPlaying(!isPlaying);
+  };
   return (
     <div className={styles.container}>
       <h3>Timeline</h3>
       <div className={styles.controls}>
-        <FaStepForward size={25} />
-        <FaPlay size={25} />
-        <FaStepBackward size={25} />
+        <FaStepBackward size={25} onClick={handlePrevious} />
+        {isPlaying ? (
+          <FaPause size={25} onClick={handlePlayPause} />
+        ) : (
+          <FaPlay size={25} onClick={handlePlayPause} />
+        )}
+
+        <FaStepForward size={25} onClick={handleNext} />
       </div>
-      <div className={styles.waveForms}>
-        <Draggable axis="x" onDrag={handleDrag}>
+      <Droppable droppableId="timeline" direction="horizontal">
+        {(provided) => (
           <div
-            style={{
-              position: "absolute",
-              left: `${timelinePos}%`,
-              top: "0",
-              //   left: "50px",
-              width: "2px",
-              height: "100%",
-              background: "red",
-              zIndex: 1000,
-              transform: "translateX(-50%)",
-            }}
-          />
-        </Draggable>
-        {audioFiles.map((audio, index) => (
-          <div className={styles.waveForm}>
-            <WaveSurfer
-              key={index}
-              url={audio.url}
-              waveColor="rgb(200, 0, 200)"
-              progressColor="rgb(100, 0, 100)"
-              width={1500}
-              onFinish={handleSongChange}
-              //   onDrag={handleDrag}
-              onInteraction={handleInteraction}
-              onSeeking={handleDrag}
-              finish={handleSongChange}
-              index={index}
-              //   plugins={waveTimeline}
-            />
+            className={styles.waveForms}
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+          >
+            <LineDraggable
+              axis="x"
+              onDrag={handleDrag}
+              ref={timelineDraggableRef}
+              defaultPosition={{ x: 0, y: 0 }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  top: "0",
+                  width: "4px",
+                  height: "100%",
+                  background: "red",
+                  zIndex: 1000,
+                  transform: "translateX(-50%)",
+                }}
+              />
+            </LineDraggable>
+            {timelines}
+            {provided.placeholder}
           </div>
-        ))}
-      </div>
+        )}
+      </Droppable>
       <AudioPlayer
         ref={audioRef}
-        src={audioFiles[currentSongIndex].url}
-        listenInterval={2}
+        src={audioFiles[currentSongIndex | 0].url}
+        listenInterval={1000}
         onListen={handleTimeUpdate}
-        onEnded={() =>
-          handleSongChange((currentSongIndex + 1) % audioFiles.length)
-        }
-        autoPlay
+        onEnded={() => handleNext}
+        // autoPlay
       />
     </div>
   );
