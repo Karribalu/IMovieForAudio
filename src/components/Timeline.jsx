@@ -1,22 +1,19 @@
-import React, {
-  useState,
-  useRef,
-  useMemo,
-  useEffect,
-  useCallback,
-} from "react";
+import React, { useState, useRef, useMemo, useEffect } from "react";
 import WaveSurfer from "@wavesurfer/react";
 import AudioPlayer from "react-audio-player";
 import LineDraggable from "react-draggable";
-import audio1 from "../assets/audios/audio1.mp3";
-import audio2 from "../assets/audios/audio2.mp3";
-import audio3 from "../assets/audios/audio3.mp3";
-import styles from "../styles/Timeline.module.css";
 import { FaPause, FaStepForward } from "react-icons/fa";
 import { FaStepBackward } from "react-icons/fa";
 import { FaPlay } from "react-icons/fa";
-import WaveTimeline from "wavesurfer.js/dist/plugins/timeline.esm.js";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
+import audio1 from "../assets/audios/audio1.mp3";
+import audio2 from "../assets/audios/audio2.mp3";
+import audio3 from "../assets/audios/audio3.mp3";
+import {
+  Controls,
+  TimelineContainer,
+  WaveForms,
+} from "../styles/TimelineStyles";
 /**
  * @author
  * @function Timeline
@@ -85,16 +82,14 @@ export const Timeline = (props) => {
   const timelines = useMemo(() => {
     return audioFiles.map((audio, index) => {
       return (
-        <div className={styles.waveForm}>
-          <WaveSurfer
-            key={index}
-            url={audio.url}
-            waveColor="rgb(200, 0, 200)"
-            width={SONG_WIDTH}
-            index={index}
-            interact={false}
-          />
-        </div>
+        <WaveSurfer
+          key={index}
+          url={audio.url}
+          waveColor="rgb(200, 0, 200)"
+          width={SONG_WIDTH}
+          index={index}
+          interact={false}
+        />
       );
     });
   }, [JSON.stringify(audioFiles)]);
@@ -119,48 +114,39 @@ export const Timeline = (props) => {
     setIsPlaying(!isPlaying);
   };
   return (
-    <div className={styles.container}>
+    <TimelineContainer>
       <h3>Timeline</h3>
-      <div className={styles.controls}>
+      <Controls>
         <FaStepBackward size={25} onClick={handlePrevious} />
         {isPlaying ? (
           <FaPause size={25} onClick={handlePlayPause} />
         ) : (
           <FaPlay size={25} onClick={handlePlayPause} />
         )}
-
-        <FaStepForward size={25} onClick={handleNext} />
-      </div>
-      <Droppable droppableId="timeline" direction="horizontal">
-        {(provided) => (
+        <FaStepForward size={25} onClick={handleNext} key={"forward"} />
+      </Controls>
+      <WaveForms>
+        <LineDraggable
+          axis="x"
+          onDrag={handleDrag}
+          ref={timelineDraggableRef}
+          defaultPosition={{ x: 0, y: 0 }}
+        >
           <div
-            className={styles.waveForms}
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-          >
-            <LineDraggable
-              axis="x"
-              onDrag={handleDrag}
-              ref={timelineDraggableRef}
-              defaultPosition={{ x: 0, y: 0 }}
-            >
-              <div
-                style={{
-                  position: "absolute",
-                  top: "0",
-                  width: "4px",
-                  height: "100%",
-                  background: "red",
-                  zIndex: 1000,
-                  transform: "translateX(-50%)",
-                }}
-              />
-            </LineDraggable>
-            {timelines}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
+            style={{
+              position: "absolute",
+              top: "0",
+              width: "4px",
+              height: "100%",
+              background: "red",
+              zIndex: 1000,
+              transform: "translateX(-50%)",
+            }}
+          />
+        </LineDraggable>
+        {timelines}
+      </WaveForms>
+
       <AudioPlayer
         ref={audioRef}
         src={audioFiles[currentSongIndex | 0].url}
@@ -169,6 +155,6 @@ export const Timeline = (props) => {
         onEnded={() => handleNext}
         // autoPlay
       />
-    </div>
+    </TimelineContainer>
   );
 };
