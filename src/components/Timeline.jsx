@@ -58,6 +58,7 @@ export const Timeline = (props) => {
   }, [currentSongIndex]);
   useEffect(() => {
     if (audioRef?.current?.audioEl?.current) {
+      // This might raise an exception as play() can only be called when user performs some action.
       const promise = audioRef?.current?.audioEl?.current?.play();
       if (promise !== undefined) {
         promise.catch(console.debug);
@@ -71,6 +72,8 @@ export const Timeline = (props) => {
     setCurrentTime(time);
   };
   useEffect(() => {
+    // This gets changed every 1 second by the Audio Element
+    // We find the movable line posiiton based on current time.
     const songDuration = audioRef?.current?.audioEl.current?.duration;
     const newPos =
       10 +
@@ -81,6 +84,8 @@ export const Timeline = (props) => {
     setDraggableLinePosition(newPos);
   }, [currentTime]);
   const handleDrag = (_, data) => {
+    // This might raise exception when moving from one audio to another.
+    // We get the x axis of the div and derive the current time from draggable line position.
     try {
       const { x } = data;
       let newSongIndex =
@@ -101,6 +106,7 @@ export const Timeline = (props) => {
     } catch (e) {}
   };
   const calculateCurrentRuntime = (time, songIndex) => {
+    // We have to add all the previous audios time and the current time of the current audio.
     let totalTime = time;
     for (let i = 0; i < songIndex; i++) {
       totalTime += audios[order[i]].duration;
@@ -158,13 +164,16 @@ export const Timeline = (props) => {
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
   };
-  const handlMouseMove = (event) => {
+  const handleMouseMove = (event) => {
+    // We are using this to allow user to double click on the time line and move the line.
     const rect = scrollableDivRef.current.getBoundingClientRect();
     const offsetX =
       event.clientX - rect.left + scrollableDivRef.current.scrollLeft;
     setMouseCoordinates(offsetX);
   };
   const handleTimelineClick = () => {
+    // Handling the double click
+
     handleDrag("", { x: mouseCoordinates });
     setDraggableLinePosition(mouseCoordinates);
   };
@@ -193,7 +202,7 @@ export const Timeline = (props) => {
         {(provided) => {
           return (
             <TimelineContainer
-              onMouseMove={handlMouseMove}
+              onMouseMove={handleMouseMove}
               ref={scrollableDivRef}
               onDoubleClick={handleTimelineClick}
               style={{
