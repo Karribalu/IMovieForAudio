@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/imovie-for-audio/static/css/main.a40e42c9.css",
-    "main.js": "/imovie-for-audio/static/js/main.cd913c0a.js",
+    "main.js": "/imovie-for-audio/static/js/main.dbe95ded.js",
     "static/js/453.640b1fb4.chunk.js": "/imovie-for-audio/static/js/453.640b1fb4.chunk.js",
     "index.html": "/imovie-for-audio/index.html",
     "main.a40e42c9.css.map": "/imovie-for-audio/static/css/main.a40e42c9.css.map",
-    "main.cd913c0a.js.map": "/imovie-for-audio/static/js/main.cd913c0a.js.map",
+    "main.dbe95ded.js.map": "/imovie-for-audio/static/js/main.dbe95ded.js.map",
     "453.640b1fb4.chunk.js.map": "/imovie-for-audio/static/js/453.640b1fb4.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a40e42c9.css",
-    "static/js/main.cd913c0a.js"
+    "static/js/main.dbe95ded.js"
   ]
 }
