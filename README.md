@@ -41,6 +41,7 @@ To create the clone of IMovie for Audio, I took the following use cases.
 2. Implemented Draggable inside the Upload Component as well, If user wants to organize the imports before adding to the timeline.
 3. Not implemented drag and drop from Upload component to Timeline (Genuinely tried it for some good time 😕 ).
 4. Added checkboxes for each Audio File and a button to add the selected to Timeline at the end.
+5. Double click on the timeline moves the playback head to that position.
 
 ## Challenges I encountered
 
