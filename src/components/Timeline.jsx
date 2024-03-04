@@ -13,7 +13,6 @@ import {
   PlayBackTime,
   PlaybackContainer,
   TimelineContainer,
-  TimelineHeader,
   WaveForm,
   WaveForms,
 } from "../styles/TimelineStyles";
