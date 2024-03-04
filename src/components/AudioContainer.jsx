@@ -2,45 +2,32 @@ import React from "react";
 import { FcAudioFile } from "react-icons/fc";
 import { Draggable } from "@hello-pangea/dnd";
 import { AudioFile } from "../styles/AudioContainerStyles";
-/**
- * @author
- * @function AudioContainer
- **/
+import { getMinutes, getSeconds } from "../utils";
 
-const getMinutes = (time) => {
-  let minutes = Math.floor(time / 60);
-  if (minutes < 10) {
-    return "0" + minutes;
-  }
-  return minutes;
-};
-const getSeconds = (time) => {
-  let seconds = Math.floor(time - getMinutes(time) * 60);
-  if (seconds < 10) {
-    return "0" + seconds;
-  }
-  return seconds;
-};
 export const AudioContainer = (props) => {
-  const { audio, index } = props;
+  const { audio, index, selectedAudios, handleCheck } = props;
   return (
     <Draggable draggableId={audio.name} index={index} key={audio.name}>
-      {(provided, snapshot, innerRef) => {
+      {(provided) => {
         return (
           <AudioFile
             ref={provided.innerRef}
             {...provided.draggableProps}
-            // isdragging={snapshot.isDragging | false}
             {...provided.dragHandleProps}
-            // key={index}
           >
-            <FcAudioFile size={50} />
-            <p style={{ fontSize: 12, lineHeight: 0 }}>
+            <FcAudioFile size={70} />
+            <p style={{ fontSize: 16, lineHeight: 0, color: "white" }}>
               {audio.name.split(".")[0]}
             </p>
-            <p style={{ fontSize: 10, lineHeight: 0 }}>
+            <p style={{ fontSize: 16, lineHeight: 0, color: "white" }}>
               {getMinutes(audio.duration) + ":" + getSeconds(audio.duration)}
             </p>
+            <input
+              type="checkbox"
+              onChange={handleCheck}
+              value={audio.name}
+              checked={selectedAudios.includes(audio.name)}
+            />
           </AudioFile>
         );
       }}

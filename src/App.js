@@ -1,40 +1,15 @@
-import logo from "./logo.svg";
 import "./App.css";
 import { UploadComponent } from "./components/UploadComponents";
 import { Timeline } from "./components/Timeline";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { useState } from "react";
-import audio1 from "./assets/audios/audio1.mp3";
-import audio2 from "./assets/audios/audio2.mp3";
-import audio3 from "./assets/audios/audio3.mp3";
 function App() {
-  const [audios, setAudios] = useState({
-    "audio1.mp3": {
-      url: audio1,
-      duration: 267.75,
-      name: "audio1.mp3",
-    },
-    "audio2.mp3": {
-      url: audio2,
-      duration: 248.3,
-      name: "audio2.mp3",
-    },
-    "audio3.mp3": {
-      url: audio3,
-      duration: 118.5,
-      name: "audio3.mp3",
-    },
-  });
-  const [order, setOrder] = useState([
-    "audio1.mp3",
-    "audio2.mp3",
-    "audio3.mp3",
-  ]);
+  const [timelineAudios, setTimeLineAudios] = useState({});
+  const [timelineOrder, setTimelineOrder] = useState([]);
+  const [audios, setAudios] = useState({});
+  const [order, setOrder] = useState([]);
   const onDragEnd = (result) => {
     const { destination, source, draggableId, type } = result;
-    console.log("destination", destination);
-    console.log("source", source);
-    console.log("draggableId", draggableId);
     if (!destination) {
       return;
     }
@@ -44,11 +19,22 @@ function App() {
     ) {
       return;
     }
-    const newTaskIds = Array.from(order);
-    newTaskIds.splice(source.index, 1);
-    newTaskIds.splice(destination.index, 0, draggableId);
-    console.log("order changed", newTaskIds);
-    setOrder(newTaskIds);
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.droppableId === "timeline"
+    ) {
+      // Handling drag and drop in the timeline
+      const newOrder = Array.from(timelineOrder);
+      newOrder.splice(source.index, 1);
+      newOrder.splice(destination.index, 0, draggableId);
+      setTimelineOrder(newOrder);
+      return;
+    }
+    // Handling drag and drop in the Add Files Component
+    const newOrder = Array.from(order);
+    newOrder.splice(source.index, 1);
+    newOrder.splice(destination.index, 0, draggableId);
+    setOrder(newOrder);
   };
   return (
     <div className="App">
@@ -58,8 +44,12 @@ function App() {
           order={order}
           setAudios={setAudios}
           setOrder={setOrder}
+          timelineOrder={timelineOrder}
+          timelineAudios={timelineAudios}
+          setTimeLineAudios={setTimeLineAudios}
+          setTimelineOrder={setTimelineOrder}
         />
-        <Timeline />
+        <Timeline order={timelineOrder} audios={timelineAudios} />
       </DragDropContext>
     </div>
   );

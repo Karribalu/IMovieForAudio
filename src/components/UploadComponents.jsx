@@ -1,44 +1,30 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { BsArrowDownSquareFill } from "react-icons/bs";
 import { Droppable } from "@hello-pangea/dnd";
 import { AudioContainer } from "./AudioContainer";
 import {
   AudioContainerStyle,
+  Button,
   Heading,
   Import,
   ImportText,
   UploadContainer,
 } from "../styles/UploadComponentsStyles";
-var a;
+import { v4 as uuid } from "uuid";
 const UploadComponent = (props) => {
-  const { audios, setAudios, order, setOrder } = props;
+  const {
+    audios,
+    setAudios,
+    order,
+    setOrder,
+    timelineAudios,
+    timelineOrder,
+    setTimeLineAudios,
+    setTimelineOrder,
+  } = props;
   const uploadRef = useRef(null);
-  const [buttonName, setButtonName] = useState("Play");
-  const [audio, setAudio] = useState();
-  useEffect(() => {
-    if (a) {
-      a.pause();
-      a = null;
-      setButtonName("Play");
-    }
-    if (audio) {
-      a = new Audio(audio);
-      a.onended = () => {
-        setButtonName("Play");
-      };
-    }
-  }, [audio]);
-
-  const handleClick = () => {
-    if (buttonName === "Play") {
-      a.play();
-      setButtonName("Pause");
-    } else {
-      a.pause();
-      setButtonName("Play");
-    }
-  };
-
+  const [selectedAudios, setSelectedAudios] = useState([]);
+  const [added, setAdded] = useState(0);
   const addFile = async (e) => {
     Object.values(e.target.files).map(async (file) => {
       let url = URL.createObjectURL(file);
@@ -48,7 +34,9 @@ const UploadComponent = (props) => {
         duration: await getAudioDuration(url),
       };
       setAudios((prev) => ({ ...prev, [file.name]: newFile }));
-      setOrder((prev) => [...prev, file.name]);
+      if (!order.includes(file.name)) {
+        setOrder((prev) => [...prev, file.name]);
+      }
     });
   };
   async function getAudioDuration(audioURL) {
@@ -65,6 +53,38 @@ const UploadComponent = (props) => {
   const handleUpload = () => {
     uploadRef.current.click();
   };
+  const handleCheck = (event) => {
+    let prev = [...selectedAudios];
+    if (event.target.checked) {
+      prev.push(event.target.value);
+    } else {
+      const index = prev.indexOf(5);
+      if (index > -1) {
+        // Only splice the array when the item is found
+        prev.splice(index, 1);
+      }
+    }
+    setSelectedAudios(prev);
+  };
+  const ImportComponent = (props) => (
+    <Import onClick={handleUpload} {...props}>
+      <BsArrowDownSquareFill />
+      <ImportText>Import Audio(s)</ImportText>
+    </Import>
+  );
+  const handleAdd = () => {
+    const newOrder = [...timelineOrder];
+    const newSelected = { ...timelineAudios };
+    selectedAudios.map((audio) => {
+      const id = uuid();
+      newOrder.push(id);
+      newSelected[id] = audios[audio];
+    });
+    setTimeLineAudios(newSelected);
+    setTimelineOrder(newOrder);
+    setAdded(selectedAudios.length);
+    setSelectedAudios([]);
+  };
 
   return (
     <UploadContainer>
@@ -78,34 +98,42 @@ const UploadComponent = (props) => {
       />
       <Heading>
         <h3>Audio Files</h3>
-        <Import onClick={handleUpload}>
-          <BsArrowDownSquareFill />
-          <ImportText>Import Audio</ImportText>
-        </Import>
+        {added > 0 && (
+          <p style={{ color: "green" }}>
+            {added} Audio(s) added to the Timeline
+          </p>
+        )}
+        {order.length > 0 && <ImportComponent />}
       </Heading>
-      <Droppable droppableId={"audios"} direction="horizontal" type="column">
-        {(provided, snapshot) => {
-          return (
-            <AudioContainerStyle
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              key={"droppable"}
-              isdraggingover={snapshot.isDraggingOver | false}
-            >
-              {order.map((item, index) => {
-                return (
-                  <AudioContainer
-                    audio={audios[item]}
-                    index={index}
-                    key={index}
-                  />
-                );
-              })}
-              {provided.placeholder}
-            </AudioContainerStyle>
-          );
-        }}
-      </Droppable>
+      {order.length === 0 && <ImportComponent />}
+      {order.length !== 0 && (
+        <Droppable droppableId={"audios"} direction="horizontal" type="column">
+          {(provided) => {
+            return (
+              <AudioContainerStyle
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                {order.map((item, index) => {
+                  return (
+                    <AudioContainer
+                      audio={audios[item]}
+                      index={index}
+                      key={index}
+                      handleCheck={handleCheck}
+                      selectedAudios={selectedAudios}
+                    />
+                  );
+                })}
+                {provided.placeholder}
+              </AudioContainerStyle>
+            );
+          }}
+        </Droppable>
+      )}
+      {order.length !== 0 && (
+        <Button onClick={handleAdd}>Add to Timeline</Button>
+      )}
     </UploadContainer>
   );
 };
