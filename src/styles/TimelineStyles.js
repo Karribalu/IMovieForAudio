@@ -63,3 +63,6 @@ export const PlayBackControls = styled.div`
   gap: 10px;
   justify-content: center;
 `;
+export const Range = styled.input`
+  width: 300px;
+`;

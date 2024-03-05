@@ -17,10 +17,7 @@ const UploadComponent = (props) => {
     setAudios,
     order,
     setOrder,
-    timelineAudios,
-    timelineOrder,
     setTimeLineAudios,
-    setTimelineOrder,
   } = props;
   const uploadRef = useRef(null);
   const [selectedAudios, setSelectedAudios] = useState([]);
@@ -73,17 +70,12 @@ const UploadComponent = (props) => {
     </Import>
   );
   const handleAdd = () => {
-    const newOrder = [...timelineOrder];
-    const newSelected = { ...timelineAudios };
+    let tempSelectedAudios = [];
     selectedAudios.map((audio) => {
-      const id = uuid();
-      newOrder.push(id);
-      newSelected[id] = audios[audio];
+      tempSelectedAudios.push(audios[audio]);
     });
-    setTimeLineAudios(newSelected);
-    setTimelineOrder(newOrder);
+    setTimeLineAudios(tempSelectedAudios);
     setAdded(selectedAudios.length);
-    setSelectedAudios([]);
   };
 
   return (

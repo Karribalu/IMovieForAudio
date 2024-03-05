@@ -18,6 +18,7 @@
     "react-waveform": "^0.1.0",
     "styled-components": "^6.1.8",
     "uuid": "^9.0.1",
+    "wavesurfer-multitrack": "^0.4.11",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

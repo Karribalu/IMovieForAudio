@@ -4,10 +4,10 @@ import { Timeline } from "./components/Timeline";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { useState } from "react";
 function App() {
-  const [timelineAudios, setTimeLineAudios] = useState({});
-  const [timelineOrder, setTimelineOrder] = useState([]);
+  const [timelineAudios, setTimeLineAudios] = useState([]);
   const [audios, setAudios] = useState({});
   const [order, setOrder] = useState([]);
+  const [flag, setFlag] = useState(false);
   const onDragEnd = (result) => {
     const { destination, source, draggableId, type } = result;
     if (!destination) {
@@ -17,17 +17,6 @@ function App() {
       destination.droppableId === source.droppableId &&
       destination.index === source.index
     ) {
-      return;
-    }
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.droppableId === "timeline"
-    ) {
-      // Handling drag and drop in the timeline
-      const newOrder = Array.from(timelineOrder);
-      newOrder.splice(source.index, 1);
-      newOrder.splice(destination.index, 0, draggableId);
-      setTimelineOrder(newOrder);
       return;
     }
     // Handling drag and drop in the Add Files Component
@@ -44,12 +33,12 @@ function App() {
           order={order}
           setAudios={setAudios}
           setOrder={setOrder}
-          timelineOrder={timelineOrder}
           timelineAudios={timelineAudios}
           setTimeLineAudios={setTimeLineAudios}
-          setTimelineOrder={setTimelineOrder}
+          setFlag={setFlag}
+          flag={flag}
         />
-        <Timeline order={timelineOrder} audios={timelineAudios} />
+        <Timeline audios={timelineAudios} />
       </DragDropContext>
     </div>
   );
