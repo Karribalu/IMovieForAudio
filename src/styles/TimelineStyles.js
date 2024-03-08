@@ -1,10 +1,16 @@
 import styled from "styled-components";
+import { deviceMobileL } from "../constants";
 
 export const PlaybackContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 0 30px 0 30px;
+  // background-color: #a1a0a5;
+  background-color: #2c2a35;
+  color: white;
+  padding-bottom: 50px;
+  border-radius: 20px;
 `;
 export const TimelineContainer = styled.div`
   align-items: center;
@@ -17,7 +23,6 @@ export const TimelineContainer = styled.div`
   min-height: 30px;
   background-color: #f6f7f7;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  border-radius: 5px;
 `;
 export const TimelineHeader = styled.div`
   display: flex;
@@ -65,4 +70,8 @@ export const PlayBackControls = styled.div`
 `;
 export const Range = styled.input`
   width: 300px;
+  background-color: red;
+  @media screen and ${deviceMobileL} {
+    width: 150px;
+  }
 `;

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { BsArrowDownSquareFill } from "react-icons/bs";
 import { Droppable } from "@hello-pangea/dnd";
 import { AudioContainer } from "./AudioContainer";
@@ -10,18 +10,18 @@ import {
   ImportText,
   UploadContainer,
 } from "../styles/UploadComponentsStyles";
-import { v4 as uuid } from "uuid";
 const UploadComponent = (props) => {
-  const {
-    audios,
-    setAudios,
-    order,
-    setOrder,
-    setTimeLineAudios,
-  } = props;
+  const { audios, setAudios, order, setOrder, setTimeLineAudios } = props;
   const uploadRef = useRef(null);
   const [selectedAudios, setSelectedAudios] = useState([]);
   const [added, setAdded] = useState(0);
+  useEffect(() => {
+    if (added > 0) {
+      setTimeout(() => {
+        setAdded(0);
+      }, [5000]);
+    }
+  }, [added]);
   const addFile = async (e) => {
     Object.values(e.target.files).map(async (file) => {
       let url = URL.createObjectURL(file);
@@ -53,9 +53,9 @@ const UploadComponent = (props) => {
   const handleCheck = (event) => {
     let prev = [...selectedAudios];
     if (event.target.checked) {
-      prev.push(event.target.value);
+      if (!prev.includes(event.target.value)) prev.push(event.target.value);
     } else {
-      const index = prev.indexOf(5);
+      const index = prev.indexOf(event.target.value);
       if (index > -1) {
         // Only splice the array when the item is found
         prev.splice(index, 1);

@@ -3,6 +3,7 @@ import { UploadComponent } from "./components/UploadComponents";
 import { Timeline } from "./components/Timeline";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { useState } from "react";
+import { Navbar } from "./components/Navbar";
 function App() {
   const [timelineAudios, setTimeLineAudios] = useState([]);
   const [audios, setAudios] = useState({});
@@ -27,6 +28,7 @@ function App() {
   };
   return (
     <div className="App">
+      <Navbar />
       <DragDropContext onDragEnd={onDragEnd}>
         <UploadComponent
           audios={audios}

@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 .App{
-  background-color: #c3c4c7;
+  background-color: #14121f;
   min-height: 100vh;
+  font-family: 'Montserrat', sans-serif;
+  padding: 50px;
 }

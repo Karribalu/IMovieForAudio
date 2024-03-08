@@ -1,17 +1,26 @@
 import styled from "styled-components";
+import { deviceMobileL } from "../constants";
 export const UploadContainer = styled.div`
   min-height: 300px;
-  padding: 0 30px 0 30px;
-  background-color: #2c3338;
+  padding: 10px 30px 0 30px;
+  background-color: #2c2a35;
   color: white;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  margin-top: 30px;
 `;
 export const AudioContainerStyle = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
-
   min-height: 300px;
   padding-left: 20px;
+  @media screen and ${deviceMobileL} {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-left: 0px;
+  }
 `;
 export const Heading = styled.div`
   display: flex;
@@ -35,16 +44,22 @@ export const FileDescription = styled.div`
   font-size: 18px;
 `;
 export const Button = styled.button`
-  padding: 10px;
+  padding: 12px;
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
+  background-color: #84aae6;
   &:hover {
-    background-color: #c0e8f9;
+    background-color: #19327d;
+    color: white;
   }
-  // float: right;
   margin-bottom: 30px;
-  // display: flex;
-  // flex-direction: flex-reverse-end;
   margin-left: 90%;
+  border: none;
+  color: black;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  @media screen and ${deviceMobileL} {
+    margin-left: 30%;
+    margin-top: 50px;
+  }
 `;

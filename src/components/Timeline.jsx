@@ -21,8 +21,8 @@ export const Timeline = (props) => {
     minPxPerSec: 10, // zoom level
     rightButtonDrag: false, // set to true to drag with right mouse button
     cursorWidth: 2,
-    cursorColor: "#D72F21",
-    trackBackground: "#2D2D2D",
+    cursorColor: "green",
+    trackBackground: "#14121f",
     trackBorderColor: "#7C7C7C",
     dragBounds: true,
     container: document.querySelector("#container-track"),
@@ -54,8 +54,8 @@ export const Timeline = (props) => {
           id: index,
           draggable: true,
           options: {
-            waveColor: "hsl(161, 87%, 49%)",
-            progressColor: "hsl(161, 87%, 20%)",
+            waveColor: "#19327d",
+            progressColor: "#84aae6",
           },
           url: audio.url,
         });
@@ -112,10 +112,15 @@ export const Timeline = (props) => {
             <RiForward30Line size={25} onClick={handleNext} />
           </PlayBackControls>
           <p style={{ fontSize: 18, fontWeight: 600 }}>Zoom:</p>
-          <Range type="range" onChange={handleZoom} defaultValue={0} />
+          <Range
+            type="range"
+            onChange={handleZoom}
+            defaultValue={0}
+            color="black"
+          />
         </div>
       </Controls>
-      <div id="container-track" style={{ backgroundColor: "#2D2D2D" }} />
+      <div id="container-track" style={{ backgroundColor: "#14121f" }} />
     </PlaybackContainer>
   );
 };

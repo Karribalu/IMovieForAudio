@@ -1,7 +1,11 @@
 import React from "react";
 import { FcAudioFile } from "react-icons/fc";
 import { Draggable } from "@hello-pangea/dnd";
-import { AudioFile } from "../styles/AudioContainerStyles";
+import {
+  AudioFile,
+  AudioFileName,
+  CheckBox,
+} from "../styles/AudioContainerStyles";
 import { getMinutes, getSeconds } from "../utils";
 
 export const AudioContainer = (props) => {
@@ -16,17 +20,14 @@ export const AudioContainer = (props) => {
             {...provided.dragHandleProps}
           >
             <FcAudioFile size={70} />
-            <p style={{ fontSize: 16, lineHeight: 0, color: "white" }}>
-              {audio.name.split(".")[0]}
-            </p>
-            <p style={{ fontSize: 16, lineHeight: 0, color: "white" }}>
+            <AudioFileName>{audio.name.split(".")[0]}</AudioFileName>
+            <AudioFileName>
               {getMinutes(audio.duration) + ":" + getSeconds(audio.duration)}
-            </p>
-            <input
+            </AudioFileName>
+            <CheckBox
               type="checkbox"
               onChange={handleCheck}
               value={audio.name}
-              checked={selectedAudios.includes(audio.name)}
             />
           </AudioFile>
         );
