@@ -4,9 +4,8 @@ import { deviceMobileL } from "../constants";
 export const PlaybackContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 30px;
   padding: 0 30px 0 30px;
-  // background-color: #a1a0a5;
   background-color: #2c2a35;
   color: white;
   padding-bottom: 50px;
@@ -26,7 +25,12 @@ export const TimelineContainer = styled.div`
 `;
 export const TimelineHeader = styled.div`
   display: flex;
-  gap: 45%;
+  justify-content: space-between;
+  @media screen and ${deviceMobileL} {
+    flex-direction: column;
+    gap: 30px;
+    justify-content: center;
+  }
 `;
 export const WaveForms = styled.div`
   display: flex;
@@ -63,15 +67,25 @@ export const EmptyTimeline = styled.div`
   padding-left: 40%;
 `;
 export const PlayBackControls = styled.div`
-  // padding-left: 50%;
   display: flex;
-  gap: 10px;
-  justify-content: center;
+  gap: 30px;
+  align-items: center;
+  padding-left: 200px;
+  @media screen and ${deviceMobileL} {
+    padding-left: 50px;
+  }
 `;
 export const Range = styled.input`
-  width: 300px;
+  width: 200px;
   background-color: red;
   @media screen and ${deviceMobileL} {
     width: 150px;
   }
+`;
+
+export const ZoomControl = styled.div`
+  display: flex;
+  gap: 30px;
+  flex: 0 0 auto;
+  right: 0px;
 `;

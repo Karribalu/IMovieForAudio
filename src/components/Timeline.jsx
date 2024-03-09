@@ -11,6 +11,8 @@ import {
   PlayBackControls,
   PlaybackContainer,
   Range,
+  TimelineHeader,
+  ZoomControl,
 } from "../styles/TimelineStyles";
 
 export const Timeline = (props) => {
@@ -88,29 +90,34 @@ export const Timeline = (props) => {
   };
   return (
     <PlaybackContainer>
-      <h3>Timeline</h3>
-      <Controls>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 20,
-          }}
-        >
-          <PlayBackControls>
-            <RiReplay30Line
+      <TimelineHeader>
+        <h3>Timeline</h3>
+        <PlayBackControls>
+          <RiReplay30Line
+            size={25}
+            onClick={handlePrevious}
+            style={{ paddingRight: 4, cursor: "pointer" }}
+          />
+          {isPlaying ? (
+            <FaPause
               size={25}
-              onClick={handlePrevious}
-              style={{ paddingRight: 4 }}
+              onClick={handlePlayPause}
+              style={{ cursor: "pointer" }}
             />
-            {isPlaying ? (
-              <FaPause size={25} onClick={handlePlayPause} />
-            ) : (
-              <FaPlay size={25} onClick={handlePlayPause} />
-            )}
-            <RiForward30Line size={25} onClick={handleNext} />
-          </PlayBackControls>
+          ) : (
+            <FaPlay
+              size={25}
+              onClick={handlePlayPause}
+              style={{ cursor: "pointer" }}
+            />
+          )}
+          <RiForward30Line
+            size={25}
+            onClick={handleNext}
+            style={{ cursor: "pointer" }}
+          />
+        </PlayBackControls>
+        <ZoomControl>
           <p style={{ fontSize: 18, fontWeight: 600 }}>Zoom:</p>
           <Range
             type="range"
@@ -118,8 +125,8 @@ export const Timeline = (props) => {
             defaultValue={0}
             color="black"
           />
-        </div>
-      </Controls>
+        </ZoomControl>
+      </TimelineHeader>
       <div id="container-track" style={{ backgroundColor: "#14121f" }} />
     </PlaybackContainer>
   );

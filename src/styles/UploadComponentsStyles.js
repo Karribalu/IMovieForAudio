@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { deviceMobileL } from "../constants";
 export const UploadContainer = styled.div`
-  min-height: 300px;
-  padding: 10px 30px 0 30px;
+  min-height: 100px;
+  padding: 10px 30px 30px 30px;
   background-color: #2c2a35;
   color: white;
   border-radius: 20px;
@@ -13,7 +13,7 @@ export const AudioContainerStyle = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
-  min-height: 300px;
+  min-height: 200px;
   padding-left: 20px;
   @media screen and ${deviceMobileL} {
     margin-top: 30px;
@@ -25,6 +25,10 @@ export const AudioContainerStyle = styled.div`
 export const Heading = styled.div`
   display: flex;
   justify-content: space-between;
+  @media screen and ${deviceMobileL} {
+    flex-direction: column;
+    gap: -10px;
+  }
 `;
 export const ImportText = styled.div`
   font-size: 16px;
@@ -43,8 +47,19 @@ export const FileDescription = styled.div`
   flex-direction: column;
   font-size: 18px;
 `;
+export const HeaderButton = styled.div`
+  display: flex;
+  gap: 50px;
+  align-items: center;
+  @media screen and ${deviceMobileL} {
+    flex-direction: column;
+    gap: 0px;
+    margin-left: -50%;
+  }
+`;
 export const Button = styled.button`
-  padding: 12px;
+  height: 40px;
+  padding: 10px;
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
@@ -53,8 +68,6 @@ export const Button = styled.button`
     background-color: #19327d;
     color: white;
   }
-  margin-bottom: 30px;
-  margin-left: 90%;
   border: none;
   color: black;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);

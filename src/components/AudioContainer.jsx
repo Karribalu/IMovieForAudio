@@ -19,7 +19,7 @@ export const AudioContainer = (props) => {
             {...provided.draggableProps}
             {...provided.dragHandleProps}
           >
-            <FcAudioFile size={70} />
+            <FcAudioFile size={50} />
             <AudioFileName>{audio.name.split(".")[0]}</AudioFileName>
             <AudioFileName>
               {getMinutes(audio.duration) + ":" + getSeconds(audio.duration)}

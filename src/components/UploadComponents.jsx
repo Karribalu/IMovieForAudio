@@ -5,6 +5,7 @@ import { AudioContainer } from "./AudioContainer";
 import {
   AudioContainerStyle,
   Button,
+  HeaderButton,
   Heading,
   Import,
   ImportText,
@@ -95,7 +96,12 @@ const UploadComponent = (props) => {
             {added} Audio(s) added to the Timeline
           </p>
         )}
-        {order.length > 0 && <ImportComponent />}
+        {order.length > 0 && (
+          <HeaderButton>
+            <Button onClick={handleUpload}>Upload Audio(s)</Button>
+            <Button onClick={handleAdd}>Add to Timeline</Button>
+          </HeaderButton>
+        )}
       </Heading>
       {order.length === 0 && <ImportComponent />}
       {order.length !== 0 && (
@@ -122,9 +128,6 @@ const UploadComponent = (props) => {
             );
           }}
         </Droppable>
-      )}
-      {order.length !== 0 && (
-        <Button onClick={handleAdd}>Add to Timeline</Button>
       )}
     </UploadContainer>
   );
