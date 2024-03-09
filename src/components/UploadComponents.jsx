@@ -52,7 +52,10 @@ const UploadComponent = (props) => {
         {({ getRootProps, getInputProps, isDragActive }) => (
           <section>
             <DragAndDrop {...getRootProps()}>
-              <input {...getInputProps()} accept="audio/mpeg,audio/ogg" />
+              <input
+                {...getInputProps()}
+                accept="audio/mpeg,audio/ogg,audios/wav"
+              />
 
               <BsArrowDownSquareFill size={20} />
               {isDragActive ? (
