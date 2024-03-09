@@ -1,20 +1,13 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { BsArrowDownSquareFill } from "react-icons/bs";
-import { Droppable } from "@hello-pangea/dnd";
-import { AudioContainer } from "./AudioContainer";
 import {
-  AudioContainerStyle,
-  Button,
-  HeaderButton,
+  DragAndDrop,
   Heading,
-  Import,
-  ImportText,
   UploadContainer,
 } from "../styles/UploadComponentsStyles";
+import Dropzone from "react-dropzone";
 const UploadComponent = (props) => {
-  const { audios, setAudios, order, setOrder, setTimeLineAudios } = props;
-  const uploadRef = useRef(null);
-  const [selectedAudios, setSelectedAudios] = useState([]);
+  const { setTimeLineAudios } = props;
   const [added, setAdded] = useState(0);
   useEffect(() => {
     if (added > 0) {
@@ -23,112 +16,54 @@ const UploadComponent = (props) => {
       }, [5000]);
     }
   }, [added]);
-  const addFile = async (e) => {
-    Object.values(e.target.files).map(async (file) => {
-      let url = URL.createObjectURL(file);
-      let newFile = {
-        name: file.name,
-        url: url,
-        duration: await getAudioDuration(url),
-      };
-      setAudios((prev) => ({ ...prev, [file.name]: newFile }));
-      if (!order.includes(file.name)) {
-        setOrder((prev) => [...prev, file.name]);
+  const addToTimeline = (files) => {
+    const newFiles = [];
+    files.map((file) => {
+      console.log(file);
+      if (file?.type?.startsWith("audio")) {
+        let url = URL.createObjectURL(file);
+        let newFile = {
+          name: file.name,
+          url: url,
+        };
+        newFiles.push(newFile);
       }
     });
+    setTimeLineAudios((prev) => [...prev, ...newFiles]);
+    setAdded(newFiles.length);
   };
-  async function getAudioDuration(audioURL) {
-    const audio = new Audio(audioURL); // Create an audio element
 
-    // Ensure the audio is fully loaded before accessing duration
-    await new Promise((resolve) => {
-      audio.addEventListener("loadedmetadata", resolve);
-    });
-
-    return audio.duration; // Return the duration in seconds
-  }
-
-  const handleUpload = () => {
-    uploadRef.current.click();
-  };
-  const handleCheck = (event) => {
-    let prev = [...selectedAudios];
-    if (event.target.checked) {
-      if (!prev.includes(event.target.value)) prev.push(event.target.value);
-    } else {
-      const index = prev.indexOf(event.target.value);
-      if (index > -1) {
-        // Only splice the array when the item is found
-        prev.splice(index, 1);
-      }
+  const handleDrop = useCallback((acceptedFiles) => {
+    if (acceptedFiles.length > 0) {
+      addToTimeline(acceptedFiles);
     }
-    setSelectedAudios(prev);
-  };
-  const ImportComponent = (props) => (
-    <Import onClick={handleUpload} {...props}>
-      <BsArrowDownSquareFill />
-      <ImportText>Import Audio(s)</ImportText>
-    </Import>
-  );
-  const handleAdd = () => {
-    let tempSelectedAudios = [];
-    selectedAudios.map((audio) => {
-      tempSelectedAudios.push(audios[audio]);
-    });
-    setTimeLineAudios(tempSelectedAudios);
-    setAdded(selectedAudios.length);
-  };
+  }, []);
 
   return (
     <UploadContainer>
-      <input
-        type="file"
-        accept="audio/*"
-        multiple
-        ref={uploadRef}
-        hidden={true}
-        onChange={addFile}
-      />
       <Heading>
-        <h3>Audio Files</h3>
         {added > 0 && (
           <p style={{ color: "green" }}>
             {added} Audio(s) added to the Timeline
           </p>
         )}
-        {order.length > 0 && (
-          <HeaderButton>
-            <Button onClick={handleUpload}>Upload Audio(s)</Button>
-            <Button onClick={handleAdd}>Add to Timeline</Button>
-          </HeaderButton>
-        )}
       </Heading>
-      {order.length === 0 && <ImportComponent />}
-      {order.length !== 0 && (
-        <Droppable droppableId={"audios"} direction="horizontal" type="column">
-          {(provided) => {
-            return (
-              <AudioContainerStyle
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-              >
-                {order.map((item, index) => {
-                  return (
-                    <AudioContainer
-                      audio={audios[item]}
-                      index={index}
-                      key={index}
-                      handleCheck={handleCheck}
-                      selectedAudios={selectedAudios}
-                    />
-                  );
-                })}
-                {provided.placeholder}
-              </AudioContainerStyle>
-            );
-          }}
-        </Droppable>
-      )}
+      <Dropzone onDrop={handleDrop}>
+        {({ getRootProps, getInputProps, isDragActive }) => (
+          <section>
+            <DragAndDrop {...getRootProps()}>
+              <input {...getInputProps()} accept="audio/mpeg,audio/ogg" />
+
+              <BsArrowDownSquareFill size={20} />
+              {isDragActive ? (
+                <p>Drop to add! </p>
+              ) : (
+                <p>Drag 'n' drop some audio(s) here, or click to select</p>
+              )}
+            </DragAndDrop>
+          </section>
+        )}
+      </Dropzone>
     </UploadContainer>
   );
 };

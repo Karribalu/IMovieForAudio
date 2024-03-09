@@ -1,13 +1,11 @@
 import React, { useState, useRef, useMemo, useEffect } from "react";
-import { FaPause, FaStepForward } from "react-icons/fa";
-import { FaStepBackward } from "react-icons/fa";
+import { FaPause } from "react-icons/fa";
 import { FaPlay } from "react-icons/fa";
 import MultiTrack from "wavesurfer-multitrack";
 import { RiReplay30Line } from "react-icons/ri";
 import { RiForward30Line } from "react-icons/ri";
 
 import {
-  Controls,
   PlayBackControls,
   PlaybackContainer,
   Range,
@@ -45,7 +43,6 @@ export const Timeline = (props) => {
     }
   }, [isPlaying]);
   useEffect(() => {
-    console.log(audios);
     if (multiTrack.current) {
       multiTrack.current.destroy();
     }
@@ -66,6 +63,7 @@ export const Timeline = (props) => {
       waveform.once("canplay", () => {
         waveform.play();
         multiTrack.current = waveform;
+        multiTrack.current.play();
         setIsPlaying(true);
       });
     }
